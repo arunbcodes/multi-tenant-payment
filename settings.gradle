@@ -1,0 +1,5 @@
+rootProject.name = 'multi-tenant-payment'
+
+include 'common-lib'
+include 'payment-service'
+include 'processor-service'

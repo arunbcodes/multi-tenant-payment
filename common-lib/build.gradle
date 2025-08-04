@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    // Common utilities
+    api 'org.apache.commons:commons-lang3:3.13.0'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+    
+    // Logging
+    api 'org.slf4j:slf4j-api:2.0.9'
+    
+    // Validation
+    api 'jakarta.validation:jakarta.validation-api:3.0.2'
+}
