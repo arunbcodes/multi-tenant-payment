@@ -1,9 +1,10 @@
 package com.example.payment.controller;
 
+import com.example.common.annotation.TenantId;
 import com.example.payment.model.Payment;
 import com.example.payment.service.PaymentService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,19 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/payments")
+@RequiredArgsConstructor
 public class PaymentController {
     
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
     
     @PostMapping
-    public ResponseEntity<Payment> createPayment(@Valid @RequestBody Payment payment) {
-        log.info("Creating payment for tenant: {} customer: {}", payment.getTenantId(), payment.getCustomerId());
+    public ResponseEntity<Payment> createPayment(
+            @TenantId String tenantId,
+            @Valid @RequestBody Payment payment) {
+        log.info("Creating payment for tenant: {} customer: {}", tenantId, payment.getCustomerId());
+        
+        // Ensure payment has the correct tenant ID from header
+        payment.setTenantId(tenantId);
         Payment createdPayment = paymentService.createPayment(payment);
         log.info("Payment created successfully: {} for tenant: {}", createdPayment.getPaymentId(), createdPayment.getTenantId());
         return new ResponseEntity<>(createdPayment, HttpStatus.CREATED);
@@ -29,7 +35,7 @@ public class PaymentController {
     
     @GetMapping("/{paymentId}")
     public ResponseEntity<Payment> getPayment(
-            @RequestHeader("X-Tenant-ID") String tenantId,
+            @TenantId String tenantId,
             @PathVariable String paymentId) {
         log.debug("Retrieving payment: {} for tenant: {}", paymentId, tenantId);
         return paymentService.findByPaymentId(tenantId, paymentId)
@@ -45,7 +51,7 @@ public class PaymentController {
     
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<Payment>> getPaymentsByCustomer(
-            @RequestHeader("X-Tenant-ID") String tenantId,
+            @TenantId String tenantId,
             @PathVariable String customerId) {
         log.debug("Retrieving payments for customer: {} in tenant: {}", customerId, tenantId);
         List<Payment> payments = paymentService.findByCustomerId(tenantId, customerId);
@@ -54,8 +60,7 @@ public class PaymentController {
     }
     
     @GetMapping("/tenant")
-    public ResponseEntity<List<Payment>> getAllPaymentsForTenant(
-            @RequestHeader("X-Tenant-ID") String tenantId) {
+    public ResponseEntity<List<Payment>> getAllPaymentsForTenant(@TenantId String tenantId) {
         log.debug("Retrieving all payments for tenant: {}", tenantId);
         List<Payment> payments = paymentService.findByTenantId(tenantId);
         log.debug("Found {} payments for tenant: {}", payments.size(), tenantId);
@@ -64,7 +69,7 @@ public class PaymentController {
     
     @PutMapping("/{paymentId}/status")
     public ResponseEntity<Payment> updatePaymentStatus(
-            @RequestHeader("X-Tenant-ID") String tenantId,
+            @TenantId String tenantId,
             @PathVariable String paymentId,
             @RequestParam Payment.PaymentStatus status) {
         try {

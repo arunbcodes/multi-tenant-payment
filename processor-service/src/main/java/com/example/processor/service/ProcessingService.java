@@ -3,8 +3,8 @@ package com.example.processor.service;
 import com.example.common.util.DateUtils;
 import com.example.processor.model.ProcessingRequest;
 import com.example.processor.repository.ProcessingRequestRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +16,10 @@ import java.util.UUID;
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProcessingService {
     
-    @Autowired
-    private ProcessingRequestRepository repository;
+    private final ProcessingRequestRepository repository;
     
     public ProcessingRequest createProcessingRequest(String tenantId, String paymentId) {
         ProcessingRequest request = ProcessingRequest.builder()

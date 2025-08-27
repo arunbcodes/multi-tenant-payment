@@ -3,8 +3,8 @@ package com.example.payment.service;
 import com.example.common.util.DateUtils;
 import com.example.payment.model.Payment;
 import com.example.payment.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +16,10 @@ import java.util.UUID;
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PaymentService {
     
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
     
     public Payment createPayment(Payment payment) {
         // Demonstrate Lombok's generated builder pattern and methods

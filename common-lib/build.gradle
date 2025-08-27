@@ -12,4 +12,7 @@ dependencies {
     
     // Validation
     api 'jakarta.validation:jakarta.validation-api:3.0.2'
+    
+    // Spring Web (for @RequestHeader annotation in base controller)
+    api 'org.springframework:spring-web:6.1.0'
 }
